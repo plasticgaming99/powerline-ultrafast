@@ -36,9 +36,33 @@ char *getHomepath() {
     }
     return homeenv;
   #endif
-};
+}
+
+// foreground 1 or background 0
+static inline char *shellcolor(int ForB, const char *color, const char *shell) {
+  static char retstr[512];
+  if (strcmp(shell, "zsh") == 0) {
+    switch (ForB) {
+      case 0:
+        snprintf(retstr+strlen(retstr), strlen(retstr), "%%{[38;5;%sm%%}", color);
+      case 1:
+        snprintf(retstr+strlen(retstr), strlen(retstr), "%%{[48;5;%sm%%}", color);
+    }
+  } else if (strcmp(shell, "bare")) {
+    
+  }
+  return retstr;
+}
+
+static inline char *setcolor(const char *fg, const char *bg, const char *shell) {
+  static char colorstr[1024];
+  strcat(colorstr, shellcolor(0, bg, shell));
+  strcat(colorstr, shellcolor(1, fg, shell));
+  return colorstr;
+}
 
 int main(int argc, char *argv[]) {
+  printf("%%{[38;5;250m%%}%%{[48;5;240m%%} %%n %%{[48;5;238m%%}%%{[38;5;240m%%}%%{[0m%%}%%{[38;5;250m%%}%%{[48;5;238m%%} %%m %%{[48;5;31m%%}%%{[38;5;238m%%}%%{[0m%%}%%{[38;5;15m%%}%%{[48;5;31m%%} ~ %%{[48;5;236m%%}%%{[38;5;31m%%}%%{[0m%%}%%{[38;5;15m%%}%%{[48;5;236m%%} %%# %%{[0m%%}%%{[38;5;236m%%}%%{[0m%%}");
   const char *shell_name = NULL;
   const char *dir_sep = splitDir;
 
@@ -118,10 +142,12 @@ int main(int argc, char *argv[]) {
   switch (promptType) {
     case 0:
       if (!inhome && count != homedepth) {
-        printf(FG USER_FG BG USER_BG" %s "RESET_ALL FG USER_BG BG HOST_BG PL_SYMBOL RESET_ALL
+        printf("%s", setcolor(USER_FG, USER_BG, shell_name));
+        printf("   ");
+        /*printf(FG USER_FG BG USER_BG " %s "RESET_ALL FG USER_BG BG HOST_BG PL_SYMBOL RESET_ALL
           FG HOST_FG BG HOST_BG" %s " RESET_ALL FG HOST_BG BG HOME_BG PL_SYMBOL RESET_ALL
           FG HOME_FG BG HOME_BG" ~ " RESET_ALL FG HOME_BG BG PATH_BG PL_SYMBOL RESET_ALL
-          FG CWD_FG BG PATH_BG" %s" RESET_ALL FG PATH_BG PL_SYMBOL,username, hostname, cwdbuf);
+          FG CWD_FG BG PATH_BG" %s" RESET_ALL FG PATH_BG PL_SYMBOL,username, hostname, cwdbuf);*/
       } else if (!inhome) {
         printf(FG USER_FG BG USER_BG" %s "RESET_ALL FG USER_BG BG HOST_BG PL_SYMBOL RESET_ALL
           FG HOST_FG BG HOST_BG" %s " RESET_ALL FG HOST_BG BG HOME_BG PL_SYMBOL RESET_ALL

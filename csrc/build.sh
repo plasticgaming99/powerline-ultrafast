@@ -1,0 +1,1 @@
+musl-clang -o powerline-ultrafast main.c -O3 -flto=full -ftree-vectorize -march=native -static -pipe -fuse-ld=lld -fintegrated-as -fintegrated-cc1 -flto=full -fwhole-program-vtables -fforce-emit-vtables -fvirtual-function-elimination -ffunction-sections -fdata-sections -faddrsig -Wl,--gc-sections,--icf=all

@@ -2,7 +2,6 @@
 
 #define FG "\x1b[38;5;"
 #define BG "\x1b[48;5;"
-#define m "m"
 
 #define getpath
 
