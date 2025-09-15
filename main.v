@@ -15,8 +15,14 @@ interface Segment {
 }
 
 fn main() {
-	mut seg :=[]Segment{}
-	seg << Username{}
-	seg << Hostname{}
-	println(joincrs(seg[0].getrunes(), seg[1].getrunes()).output_zsh())
+	mut segs :=[]Segment{}
+	segs << Username{}
+	segs << Hostname{}
+	segs << Cwd{}
+	segs << PromptEnd{}
+	mut joined_segs := []ColorRune{}
+	for seg in segs {
+		joined_segs.joincrs(seg.getrunes())
+	}
+	println(joined_segs.terminate().output_zsh())
 }

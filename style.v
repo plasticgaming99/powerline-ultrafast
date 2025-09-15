@@ -6,6 +6,8 @@ const pl_symbol_r = ""
 const separator = ""
 const separator_r = ""
 
+const prompt_end = "$"
+
 const home_fg = 15
 const home_bg = 31
 const host_fg = 250
