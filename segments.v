@@ -69,7 +69,7 @@ fn (cwd &Cwd) getrunes() []ColorRune {
     hd := os.home_dir()
     ws := wd.split(os.path_separator)[1..]
     hs := hd.split(os.path_separator)[1..]
-    if ws.len > 2 {
+    if ws.len > 1 {
         if wd[hd.len-1] == hd[hd.len-1] {
             inhome = true
         }
