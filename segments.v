@@ -70,7 +70,7 @@ fn (cwd &Cwd) getrunes() []ColorRune {
     ws := wd.split(os.path_separator)[1..]
     hs := hd.split(os.path_separator)[1..]
     if ws.len > 1 {
-        if wd[hd.len-1] == hd[hd.len-1] {
+        if ws[hs.len-1] == hs[hs.len-1] {
             inhome = true
         }
     }
@@ -82,6 +82,9 @@ fn (cwd &Cwd) getrunes() []ColorRune {
        mut c := colorify("~", home_fg, home_bg)
        c.add_padding(padding)
        cr << c
+       if ws.len == hs.len {
+        return cr
+       }
     } else if inroot {
        if ws[0] == "" {
           mut c := colorify("/", path_fg, path_bg)
@@ -113,7 +116,6 @@ fn (cwd &Cwd) getrunes() []ColorRune {
     } else {
         for i, s in ws {
             mut c := []ColorRune{}
-            println(s)
             if i == ws.len-1 {
                 c = colorify(s, cwd_fg, path_bg)
             } else {
