@@ -1,3 +1,7 @@
+module main
+
+import strings
+
 fn (cr []ColorRune) terminate() []ColorRune {
 	mut c := cr.last()
 	c.text = pl_symbol.runes().first()
@@ -19,10 +23,15 @@ fn (cr []ColorRune) output_term() string {
 }
 
 fn (cr []ColorRune) output_zsh() string {
-	mut out := ""
+	mut sb := strings.new_builder(1024)
 	for c in cr {
-		out += "%{\x1b[38;5;" +c.fg.str() +"m%}%{\x1b[48;5;" + c.bg.str() +"m%}"+c.text.str()
+		sb.write_string("%{\x1b[38;5;")
+		sb.write_string(c.fg.str())
+		sb.write_string("m%}%{\x1b[48;5;")
+		sb.write_string(c.bg.str())
+		sb.write_string("m%}")
+		sb.write_string(c.text.str())
 	}
-	out += "%{\x1b[0m%}"
-	return out
+	sb.write_string("%{\x1b[0m%}")
+	return sb.str()
 }

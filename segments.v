@@ -38,7 +38,8 @@ struct Username{
 
 fn (username &Username) getrunes() []ColorRune {
     mut cr := []ColorRune{}
-    cr = colorify(getcurrentusername(), user_fg, user_bg)
+    lname := os.loginname() or {"unknown"}
+    cr = colorify(lname, user_fg, user_bg)
     cr.add_padding(padding)
     return cr
 }
@@ -64,7 +65,7 @@ fn (cwd &Cwd) getrunes() []ColorRune {
     mut cr := []ColorRune{}
     mut inhome := false
     mut inroot := false
-    mut dirtrunc := 0
+    //mut dirtrunc := 0
 	wd := os.getwd()
     hd := os.home_dir()
     ws := wd.split(os.path_separator)[1..]

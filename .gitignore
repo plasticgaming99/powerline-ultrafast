@@ -1,3 +1,5 @@
-a.out
-powerline-ultrafast
+/a.out
+/powerline-ultrafast
+/*.profraw
+/*.profdata
 vgcore*
