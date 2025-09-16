@@ -1,2 +1,2 @@
 # powerline-ultrafast
-powerline but ultrafast by power clang, and vlang
+powerline but ultrafast by power of clang, and vlang
