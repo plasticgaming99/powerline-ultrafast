@@ -21,3 +21,10 @@ const cmd_passed_fg = 15
 const cmd_passed_bg = 236
 const cmd_failed_fg = 15
 const cmd_failed_bg = 161
+
+const lang_bash_icon = ""
+const lang_c_icon = ""
+const lang_cxx_icon = ""
+const lang_go_icon = ""
+const lang_v_icon = ""
+const lang_zsh_icon = "%_"

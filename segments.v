@@ -24,6 +24,29 @@ fn (mut cr1 []ColorRune) joincrs(cr2 []ColorRune) {
     cr1 << cr2
 }
 
+fn (mut cr1 []ColorRune) joincrs_right(cr2 []ColorRune) {
+    mut cr := []ColorRune{}
+    if cr1.len == 0 {
+        cr1 = cr2.clone()
+        return
+    }
+    joint := colorify(pl_symbol_r, cr1.last().bg, cr2.first().bg)
+    //cr1.insert(0,joint)
+    //cr1.insert(0, cr2)
+    cr << cr2
+    cr << joint
+    cr << cr1
+    cr1 = cr.clone()
+}
+
+fn (mut cr1 []ColorRune) draw_right(cr2 []ColorRune) {
+    mut i2 := 0
+    for i := cr1.len - cr2.len; i < cr1.len; i++ {
+        cr1[i] = cr2[i2]
+        i2++
+    }
+}
+
 fn (mut cr []ColorRune) add_padding(val int) {
     mut p := cr[0]
     p.text = ` `
@@ -65,6 +88,7 @@ fn (cwd &Cwd) getrunes() []ColorRune {
     mut cr := []ColorRune{}
     mut inhome := false
     mut inroot := false
+    mut rootstr := "/"
     //mut dirtrunc := 0
 	wd := os.getwd()
     hd := os.home_dir()
@@ -75,9 +99,17 @@ fn (cwd &Cwd) getrunes() []ColorRune {
             inhome = true
         }
     }
-    if wd == "/" || wd == "C:\\" {
-        inroot = true
+    $if windows {
+        if wd.runes()[1] == `:` {
+            inroot = true
+            rootstr = wd.runes()[..2].string()
+        }
+    } $else {
+        if wd == "/" {
+            inroot = true
+        }
     }
+
 
     if inhome {
        mut c := colorify("~", home_fg, home_bg)
@@ -88,7 +120,7 @@ fn (cwd &Cwd) getrunes() []ColorRune {
        }
     } else if inroot {
        if ws[0] == "" {
-          mut c := colorify("/", path_fg, path_bg)
+          mut c := colorify(rootstr, path_fg, path_bg)
           c.add_padding(padding)
           cr << c
           return cr
@@ -150,3 +182,4 @@ fn (pe &PromptEnd) getrunes() []ColorRune {
     cr.add_padding(1)
     return cr
 }
+

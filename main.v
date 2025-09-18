@@ -39,6 +39,18 @@ fn main() {
 	C.ioctl(fd, C.TIOCGWINSZ, &wsize);
 	joined_segs.fill_until(wsize.ws_col, ColorRune{bg: 0, fg:0, text: ` `})
 
+	// right segments!!
+	mut segs_right :=	[]Segment{}
+	mut leftcr := []ColorRune{}
+	mut langver := LangVersion{}
+	langver.lvc.check_version()
+	segs_right << langver
+	for seg in segs_right {
+		leftcr.joincrs_right(seg.getrunes())
+	}
+	leftcr = leftcr.terminate_right()
+	joined_segs.draw_right(leftcr)
+
 	// segment part 2!!
 	mut second_segs := []Segment{}
 	second_segs << PromptEnd{}

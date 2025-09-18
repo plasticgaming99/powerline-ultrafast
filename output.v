@@ -14,6 +14,18 @@ fn (cr []ColorRune) terminate() []ColorRune {
 	return crn
 }
 
+fn (cr []ColorRune) terminate_right() []ColorRune {
+	mut c := cr.first()
+	c.text = pl_symbol_r.runes().first()
+	//cf := c.fg
+	c.fg = c.bg
+	c.bg = 0
+	mut crn := []ColorRune{}
+	crn << c
+	crn << cr
+	return crn
+}
+
 fn (cr []ColorRune) output_term() string {
 	mut out := ""
 	for c in cr {
