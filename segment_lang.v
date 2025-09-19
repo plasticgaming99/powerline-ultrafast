@@ -1,6 +1,7 @@
 module main
 
 import os
+import x.json2
 
 struct LangVersionCache {
 mut:
@@ -120,6 +121,26 @@ fn (mut lvc LangVersionCache) check_version() {
 	return
 }
 
+fn (mut lvc LangVersionCache) get_version() {
+	cache := os.environ()["PLUF_LANG_CACHE"] or { "" }
+	if cache == "" {
+		lvc.check_version()
+		return
+	}
+
+	lvc = json2.decode[LangVersionCache](cache) or {
+		lvc.check_version()
+		return
+	}
+}
+
+fn dump_cache() string {
+	mut lvc := LangVersionCache{}
+	lvc.check_version()
+	j := json2.encode[LangVersionCache](lvc)
+	return j
+}
+
 struct LangVersion{
 mut:
 	lvc LangVersionCache
@@ -132,30 +153,30 @@ fn (lv &LangVersion) getrunes() []ColorRune {
 	mut verstr := ""
     match ln {
         .bash {}
-        .c {}
+        .c {verstr = lang_c_icon + " " + lv.lvc.c}
         //.commonlisp {}
-	    .css {}
-	    .cxx {}
+	    //.css {}
+	    .cxx {verstr = lang_c_icon + " " + lv.lvc.cxx}
 	    .go {verstr = lang_go_icon + " " + lv.lvc.go}
-	    .haskell {}
-	    .html {}
-	    .java {}
-	    .javascript {}
-	    .kotlin {}
-	    .llvm {}
-	    .lua {}
-	    .perl {}
-	    .python {}
-	    .ruby {}
-	    .rust {}
+	    .haskell {verstr = lang_haskell_icon + " " + lv.lvc.haskell}
+	    //.html {}
+	    .java {verstr = lang_java_icon + " " + lv.lvc.java}
+	    .javascript {verstr = lang_nodejs_icon + " " + lv.lvc.javascript}
+	    .kotlin {verstr = lang_kotlin_icon + " " + lv.lvc.kotlin}
+	    .llvm {verstr = lang_llvm_icon + " " + lv.lvc.llvm}
+	    .lua {verstr = lang_lua_icon + " " + lv.lvc.lua}
+	    .perl {verstr = lang_perl_icon + " " + lv.lvc.perl}
+	    .python {verstr = lang_python_icon + " " + lv.lvc.python}
+	    .ruby {verstr = lang_ruby_icon + " " + lv.lvc.ruby}
+	    .rust {verstr = lang_rust_icon + " " + lv.lvc.rust}
 	    .scala {}
 	    //.scheme {}
 	    .shellscript {}
-	    .typescript {}
+	    .typescript {verstr = lang_nodejs_icon + " " + lv.lvc.v}
 	    .v {verstr = lang_v_icon + " " + lv.lvc.v}
-	    .vimscript {}
-	    .zig {}
-	    .zsh {}
+	    .vimscript {verstr = lang_vim_icon + " " + lv.lvc.vimscript}
+	    .zig {verstr = lang_zig_icon + " " + lv.lvc.zig}
+	    .zsh {verstr = "%_ " + lv.lvc.zsh}
         else {}
     }
 	if verstr != "" {

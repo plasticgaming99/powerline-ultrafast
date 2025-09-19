@@ -51,7 +51,7 @@ fn getbestlang(lmap map[Lang]int) (Lang, int) {
 	return bestlang, bestval
 }
 
-const dlang_filelimit = 64
+const dlang_filelimit = 32
 const dlang_depthlimit = 5
 
 fn detect_lang(nested int, mut fcnt &int) (Lang, int) {
@@ -144,21 +144,31 @@ fn detect_lang(nested int, mut fcnt &int) (Lang, int) {
 			".zig" {
 				lmap[Lang.zig]++
 			}
+			".zsh" {
+				lmap[Lang.zsh]++
+			}
 			else {}
 		}
-		if fcnt > dlang_filelimit {
+		if fcnt*nested > dlang_filelimit {
 			return getbestlang(lmap)
 		}
 	}
 
 	// filename for detecting go.mod or v.mod, and some like cargo.toml
+	pkgmgr_bias := 8
 	for _, s in files {
 		match s {
+			// go
 			"go.mod", "go.sum" {
-				lmap[Lang.go]++
+				lmap[Lang.go]+=pkgmgr_bias
 			}
+			// rust
 			"Cargo.toml", "Cargo.lock" {
-				lmap[Lang.rust]++
+				lmap[Lang.rust]+=pkgmgr_bias
+			}
+			// zig
+			"build.zig" {
+				lmap[Lang.zig]+=pkgmgr_bias
 			}
 			else {}
 		}

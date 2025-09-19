@@ -22,6 +22,11 @@ pub:
 }
 
 fn main() {
+	if "--dumpcache" in os.args {
+		println(dump_cache())
+		exit(0)
+	}
+
 	// segment part 1!!
 	mut segs := []Segment{}
 	segs << Username{}
@@ -43,7 +48,8 @@ fn main() {
 	mut segs_right :=	[]Segment{}
 	mut leftcr := []ColorRune{}
 	mut langver := LangVersion{}
-	langver.lvc.check_version()
+
+	langver.lvc.get_version()
 	segs_right << langver
 	for seg in segs_right {
 		leftcr.joincrs_right(seg.getrunes())

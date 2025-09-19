@@ -15,6 +15,9 @@ fn (cr []ColorRune) terminate() []ColorRune {
 }
 
 fn (cr []ColorRune) terminate_right() []ColorRune {
+	if cr.len == 0 {
+		return []ColorRune{}
+	}
 	mut c := cr.first()
 	c.text = pl_symbol_r.runes().first()
 	//cf := c.fg
