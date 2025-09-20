@@ -87,20 +87,36 @@ fn init_optimizer() ColoredSeqeuence {
 fn (mut cs ColoredSeqeuence) optimize_crs(crs []ColorRune) {
 	mut prevfg := []rune{cap:20}
 	mut prevbg := []rune{cap:20}
+	mut prevfreset := 0
+	mut prevbreset := 0
 	for i := crs.len-1; i > -1; i-- {
 		mut fgb := crs[i].fg.runes()
 		mut bgb := crs[i].bg.runes()
 
-		if fgb == [`-`, `1`] || bgb == [`-`, `1`] {
-			cs.resetseq << i
+		if fgb == [`-`, `1`] {
+			prevfreset = 1
+		} else {
+			if prevfreset == 1 {
+				cs.resetseq << i+1
+			}
+			prevfreset = 0
 		}
 
-		if fgb != prevfg {
+		if bgb == [`-`, `1`] {
+			prevbreset = 1
+		} else {
+			if prevbreset == 1 {
+				cs.resetseq << i+1
+			}
+			prevbreset = 0
+		}
+
+		if fgb != prevfg && fgb != [`-`, `1`] {
 			cs.fgseq[i+1] = prevfg.string()
 			prevfg = fgb.clone()
 		}
 
-		if bgb != prevbg {
+		if bgb != prevbg && bgb != [`-`, `1`] {
 			cs.bgseq[i+1] = prevbg.string()
 			prevbg = bgb.clone()
 		}
