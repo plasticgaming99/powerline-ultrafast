@@ -149,7 +149,7 @@ fn detect_lang(nested int, mut fcnt &int) (Lang, int) {
 			}
 			else {}
 		}
-		if fcnt*nested > dlang_filelimit {
+		if fcnt > dlang_filelimit/(nested+1) {
 			return getbestlang(lmap)
 		}
 	}
@@ -173,7 +173,7 @@ fn detect_lang(nested int, mut fcnt &int) (Lang, int) {
 			else {}
 		}
 	}
-	if fcnt > dlang_filelimit {
+	if fcnt > dlang_filelimit/(nested+1) {
 		return getbestlang(lmap)
 	}
 

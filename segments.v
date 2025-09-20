@@ -2,8 +2,12 @@ module main
 
 import os
 
+const colorrune_cap_small = 16
+const colorrune_cap_mid = 48
+const colorrune_cap_large = 192
+
 fn colorify(s string, cfg int, cbg int) []ColorRune {
-    mut cr := []ColorRune{}
+    mut cr := []ColorRune{cap: colorrune_cap_small}
     for r in s.runes() {
         cr << ColorRune{
             fg: cfg
@@ -25,9 +29,12 @@ fn (mut cr1 []ColorRune) joincrs(cr2 []ColorRune) {
 }
 
 fn (mut cr1 []ColorRune) joincrs_right(cr2 []ColorRune) {
-    mut cr := []ColorRune{}
+    mut cr := []ColorRune{cap: colorrune_cap_mid}
     if cr1.len == 0 {
         cr1 = cr2.clone()
+        return
+    }
+    if cr2.len == 0 {
         return
     }
     joint := colorify(pl_symbol_r, cr1.last().bg, cr2.first().bg)
@@ -60,7 +67,7 @@ struct Username{
 }
 
 fn (username &Username) getrunes() []ColorRune {
-    mut cr := []ColorRune{}
+    mut cr := []ColorRune{cap: colorrune_cap_small}
     lname := os.loginname() or {"unknown"}
     cr = colorify(lname, user_fg, user_bg)
     cr.add_padding(padding)
@@ -71,7 +78,7 @@ struct Hostname{
 }
 
 fn (hostname &Hostname) getrunes() []ColorRune {
-	mut cr := []ColorRune{}
+	mut cr := []ColorRune{cap: colorrune_cap_small}
     cr = colorify(os.hostname() or {"unknown"}, host_fg, host_bg)
     cr.add_padding(padding)
     return cr
@@ -85,7 +92,7 @@ struct Cwd {
 //}
 
 fn (cwd &Cwd) getrunes() []ColorRune {
-    mut cr := []ColorRune{}
+    mut cr := []ColorRune{cap: colorrune_cap_mid}
     mut inhome := false
     mut inroot := false
     mut rootstr := "/"
@@ -173,7 +180,7 @@ struct PromptEnd {
 }
 
 fn (pe &PromptEnd) getrunes() []ColorRune {
-    mut cr := []ColorRune{}
+    mut cr := []ColorRune{cap: colorrune_cap_small}
 	cr << ColorRune{
         bg: cmd_passed_bg,
         fg: cmd_passed_fg,

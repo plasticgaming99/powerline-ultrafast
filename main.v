@@ -28,11 +28,11 @@ fn main() {
 	}
 
 	// segment part 1!!
-	mut segs := []Segment{}
+	mut segs := []Segment{cap: 3}
 	segs << Username{}
 	segs << Hostname{}
 	segs << Cwd{}
-	mut joined_segs := []ColorRune{}
+	mut joined_segs := []ColorRune{cap: colorrune_cap_large}
 	for seg in segs {
 		joined_segs.joincrs(seg.getrunes())
 	}
@@ -45,12 +45,14 @@ fn main() {
 	joined_segs.fill_until(wsize.ws_col, ColorRune{bg: 0, fg:0, text: ` `})
 
 	// right segments!!
-	mut segs_right :=	[]Segment{}
-	mut leftcr := []ColorRune{}
+	mut segs_right :=	[]Segment{cap: 2}
+	mut leftcr := []ColorRune{cap: colorrune_cap_mid}
 	mut langver := LangVersion{}
 
 	langver.lvc.get_version()
 	segs_right << langver
+
+	segs_right << Git{}
 	for seg in segs_right {
 		leftcr.joincrs_right(seg.getrunes())
 	}
@@ -58,7 +60,7 @@ fn main() {
 	joined_segs.draw_right(leftcr)
 
 	// segment part 2!!
-	mut second_segs := []Segment{}
+	mut second_segs := []Segment{cap: 1}
 	second_segs << PromptEnd{}
 	for seg in second_segs {
 		joined_segs.joincrs(seg.getrunes())
