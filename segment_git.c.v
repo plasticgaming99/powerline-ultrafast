@@ -73,15 +73,16 @@ fn git_getchanges(path string) {
 }*/
 
 // s must be directory that including .git
-fn git_get_head(s string) string {
+
+fn git_get_head(s string) (string, bool) {
 	gitdir := s + os.path_separator + ".git"
-	head := os.read_file(gitdir+os.path_separator+"HEAD") or {return ""}.trim_space()
+	head := os.read_file(gitdir+os.path_separator+"HEAD") or {return "", false}.trim_space()
 	if head.starts_with("ref:") {
-		return head.all_after_last("/")
+		return head.all_after_last("/"), false
 	} else {
-		return head[..7]
+		return head[..7], true
 	}
-	return ""
+	return "", false
 }
 
 struct Git{}
@@ -99,9 +100,13 @@ fn (g Git) getrunes() []ColorRune {
 		}
 	}
 	gd := git_get_gitdir_from_dir(ws)
-	head := git_get_head(gd)
+	head, detached := git_get_head(gd)
 	if head != "" {
-		cr = colorify(git_symbol + " " + head, git_clean_fg, git_clean_bg)
+		if detached {
+			cr = colorify(git_symbol + " ⚓ " + head, git_clean_fg, git_clean_bg)
+		} else {
+			cr = colorify(git_symbol + " " + head, git_clean_fg, git_clean_bg)
+		}
 		cr.add_padding(1)
 	}
 	return cr

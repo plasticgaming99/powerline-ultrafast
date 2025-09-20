@@ -6,7 +6,7 @@ const colorrune_cap_small = 16
 const colorrune_cap_mid = 48
 const colorrune_cap_large = 192
 
-fn colorify(s string, cfg int, cbg int) []ColorRune {
+fn colorify(s string, cfg string, cbg string) []ColorRune {
     mut cr := []ColorRune{cap: colorrune_cap_small}
     for r in s.runes() {
         cr << ColorRune{
@@ -23,7 +23,13 @@ fn (mut cr1 []ColorRune) joincrs(cr2 []ColorRune) {
         cr1 = cr2.clone()
         return
     }
-    joint := colorify(pl_symbol, cr1.last().bg, cr2.first().bg)
+    mut fg := ""
+    if cr1.last().bg != "1" {
+        fg = cr1.last().bg
+    } else {
+        fg = cr2.first().bg
+    }
+    joint := colorify(pl_symbol, fg, cr2.first().bg)
     cr1 << joint
     cr1 << cr2
 }

@@ -4,8 +4,8 @@ import os
 
 struct ColorRune {
 mut:
-	bg int
-	fg int
+	bg string
+	fg string
 	text rune
 }
 
@@ -42,7 +42,7 @@ fn main() {
 	mut wsize := C.winsize{}
 	fd := C.open('/dev/tty'.str, C.O_RDONLY)
 	C.ioctl(fd, C.TIOCGWINSZ, &wsize);
-	joined_segs.fill_until(wsize.ws_col, ColorRune{bg: 0, fg:0, text: ` `})
+	joined_segs.fill_until(wsize.ws_col, ColorRune{bg: "-1", fg:"-1", text: ` `})
 
 	// right segments!!
 	mut segs_right :=	[]Segment{cap: 2}
@@ -62,13 +62,16 @@ fn main() {
 	// segment part 2!!
 	mut second_segs := []Segment{cap: 1}
 	second_segs << PromptEnd{}
+	mut joined_second_segs := []ColorRune{cap: colorrune_cap_small}
 	for seg in second_segs {
-		joined_segs.joincrs(seg.getrunes())
+		joined_second_segs.joincrs(seg.getrunes())
 	}
+	joined_segs << joined_second_segs
 	joined_segs = joined_segs.terminate()
 
 	mut stdout := os.stdout()
-	os.fd_write(stdout.fd, joined_segs.output_zsh())
-	//println(joined_segs.output_zsh())
+	mut opt := init_optimizer()
+	opt.optimize_crs(joined_segs)
+	os.fd_write(stdout.fd, opt.output_zsh_opt())
 	exit(0)
 }
