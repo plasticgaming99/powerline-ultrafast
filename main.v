@@ -13,7 +13,7 @@ interface Segment {
 	getrunes() []ColorRune
 }
 
-struct C.winsize {
+struct Winsize {
 pub:
     ws_row u16
     ws_col u16
@@ -39,8 +39,8 @@ fn main() {
 	joined_segs = joined_segs.terminate()
 
 	// fill between segment!
-	mut wsize := C.winsize{}
-	fd := C.open('/dev/tty'.str, C.O_RDONLY)
+	mut wsize := Winsize{}
+	fd := C.open(c'/dev/tty', C.O_RDONLY)
 	C.ioctl(fd, C.TIOCGWINSZ, &wsize);
 	joined_segs.fill_until(wsize.ws_col, ColorRune{bg: "-1", fg:"-1", text: ` `})
 

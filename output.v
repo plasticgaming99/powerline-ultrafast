@@ -84,16 +84,18 @@ fn init_optimizer() ColoredSeqeuence {
 	}
 }
 
+const m_1_slice = [`-`, `1`]
+
 fn (mut cs ColoredSeqeuence) optimize_crs(crs []ColorRune) {
-	mut prevfg := []rune{cap:20}
-	mut prevbg := []rune{cap:20}
+	mut prevfg := []rune{cap:3}
+	mut prevbg := []rune{cap:3}
 	mut prevfreset := 0
 	mut prevbreset := 0
 	for i := crs.len-1; i > -1; i-- {
 		mut fgb := crs[i].fg.runes()
 		mut bgb := crs[i].bg.runes()
 
-		if fgb == [`-`, `1`] {
+		if fgb == m_1_slice {
 			prevfreset = 1
 		} else {
 			if prevfreset == 1 {
@@ -102,7 +104,7 @@ fn (mut cs ColoredSeqeuence) optimize_crs(crs []ColorRune) {
 			prevfreset = 0
 		}
 
-		if bgb == [`-`, `1`] {
+		if bgb == m_1_slice {
 			prevbreset = 1
 		} else {
 			if prevbreset == 1 {
@@ -111,12 +113,12 @@ fn (mut cs ColoredSeqeuence) optimize_crs(crs []ColorRune) {
 			prevbreset = 0
 		}
 
-		if fgb != prevfg && fgb != [`-`, `1`] {
+		if fgb != prevfg /*&& fgb != m_1_slice*/ {
 			cs.fgseq[i+1] = prevfg.string()
 			prevfg = fgb.clone()
 		}
 
-		if bgb != prevbg && bgb != [`-`, `1`] {
+		if bgb != prevbg /*&& bgb != m_1_slice*/ {
 			cs.bgseq[i+1] = prevbg.string()
 			prevbg = bgb.clone()
 		}
@@ -140,14 +142,14 @@ fn (cs &ColoredSeqeuence) output_zsh_opt() string {
 		}
 
 		fg := cs.fgseq[i]
-		if fg != "" {
+		if fg != "" && fg != "-1" {
 			byteslc << "%{\x1b[38;5;".runes()
 			byteslc << fg.str().runes()
 			byteslc << "m%}".runes()
 		}
 
 		bg := cs.bgseq[i]
-		if bg != "" {
+		if bg != "" && bg != "-1" {
 			byteslc << "%{\x1b[48;5;".runes()
 			byteslc << bg.str().runes()
 			byteslc << "m%}".runes()

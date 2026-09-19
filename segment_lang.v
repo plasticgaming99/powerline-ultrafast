@@ -36,6 +36,9 @@ fn (mut lvc LangVersionCache) check_version() {
 	{
 		b := os.execute("bash -c 'echo \$BASH_VERSION'")
 		lvc.bash = b.output.before("(")
+		if b.exit_code != 0 {
+			lvc.bash = "N/A"
+		}
 	}
 	{
 		mut c := os.execute("clang -dumpversion")
@@ -43,6 +46,9 @@ fn (mut lvc LangVersionCache) check_version() {
 			c = os.execute("gcc -dumpfullversion")
 		}
 		lvc.c = c.output.trim_space()
+		if c.exit_code != 0 {
+			lvc.c = "N/A"
+		}
 	}
 	{
 		mut c := os.execute("clang++ -dumpversion")
@@ -50,50 +56,86 @@ fn (mut lvc LangVersionCache) check_version() {
 			c = os.execute("g++ -dumpfullversion")
 		}
 		lvc.cxx = c.output.trim_space()
+		if c.exit_code != 0 {
+			lvc.cxx = "N/A"
+		}
 	}
 	{
 		g := os.execute("go version")
 		lvc.go = g.output.after("version ").before(" ").after("go")
+		if g.exit_code != 0 {
+			lvc.go = "N/A"
+		}
 	}
 	{
 		h := os.execute("ghc --version")
 		lvc.haskell = h.output.after("version ").trim_space()
+		if h.exit_code != 0 {
+			lvc.haskell = "N/A"
+		}
 	}
 	{
 		j := os.execute("java --version")
 		lvc.java = j.output.split(" ")[1]
+		if j.exit_code != 0 {
+			lvc.java = "N/A"
+		}
 	}
 	{
 		j := os.execute("node --version")
 		lvc.javascript = j.output.trim_space()
+		if j.exit_code != 0 {
+			lvc.javascript = "N/A"
+		}
 	}
 	{
 		l := os.execute("llvm-config --version")
 		lvc.llvm = l.output.trim_space()
+		if l.exit_code != 0 {
+			lvc.llvm = "N/A"
+		}
 	}
 	{
 		l := os.execute("luajit -v")
 		lvc.lua = l.output.split(" ")[1]
+		if l.exit_code != 0 {
+			lvc.lua = "N/A"
+		}
 	}
 	{
 		p := os.execute("perl -e 'print $^V'")
 		lvc.perl = p.output.trim_space()
+		if p.exit_code != 0 {
+			lvc.perl = "N/A"
+		}
 	}
 	{
 		p := os.execute("python -c 'import platform;print(platform.python_version())'")
 		lvc.python = p.output.trim_space()
+		if p.exit_code != 0 {
+			lvc.python = "N/A"
+		}
 	}
 	{
 		r := os.execute("ruby -v")
 		lvc.ruby = r.output.split(" ")[1]
+		if r.exit_code != 0 {
+			lvc.ruby = "N/A"
+		}
 	}
 	{
 		r := os.execute("rustc --version")
 		lvc.rust = r.output.split(" ")[1]
+		if r.exit_code != 0 {
+			lvc.rust = "N/A"
+		}
 	}
 	{
 		s := os.execute("scala --version")
 		lvc.scala = s.output.after("version ").before("-")
+		if s.exit_code != 0 {
+			lvc.scala = "N/A"
+		}
 	}
 	{
 		lvc.shellscript = ""
@@ -101,22 +143,37 @@ fn (mut lvc LangVersionCache) check_version() {
 	{
 		t := os.execute("node --version")
 		lvc.typescript = t.output.trim_space()
+		if t.exit_code != 0 {
+			lvc.typescript = "N/A"
+		}
 	}
 	{
 		v := os.execute("v version")
 		lvc.v = v.output.split(" ")[1]
+		if v.exit_code != 0 {
+			lvc.v = "N/A"
+		}
 	}
 	{
 		v := os.execute("vim --version")
 		lvc.vimscript = v.output.after("VIM - Vi IMproved").split(" ")[0]
+		if v.exit_code != 0 {
+			lvc.vimscript = "N/A"
+		}
 	}
 	{
 		z := os.execute("zig version")
 		lvc.zig = z.output.trim_space()
+		if z.exit_code != 0 {
+			lvc.zig = "N/A"
+		}
 	}
 	{
 		z := os.execute("zsh --version")
 		lvc.zsh = z.output.split(" ")[1]
+		if z.exit_code != 0 {
+			lvc.zsh = "N/A"
+		}
 	}
 	return
 }
